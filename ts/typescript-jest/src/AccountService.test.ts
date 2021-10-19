@@ -1,20 +1,30 @@
+import {mock} from "jest-mock-extended";
+
+interface IConsole {
+  print(line: string): void
+}
+
+const consoleService: IConsole = mock<IConsole>()
+
 describe("AccountService", () => {
   it("creates correctly", () => {
-    const accountService = new AccountService();
+    const accountService = new AccountService(consoleService);
     expect(accountService).toBeDefined();
   });
 
   it("account service prints headers when have no statements", () => {
-    const accountService: IAccountService = new AccountService();
+    
+    const accountService: IAccountService = new AccountService(consoleService);
 
     accountService.printStatement();
 
-    // Date       || Amount || Balance
+    expect(consoleService.print).toHaveBeenCalledWith('Date       || Amount || Balance')
   });
 });
 
 class AccountService implements IAccountService {
-  constructor() {}
+  constructor(private console: IConsole) {}
+
   deposit(amount: number): void {
     throw new Error("Method not implemented.");
   }
@@ -22,7 +32,7 @@ class AccountService implements IAccountService {
     throw new Error("Method not implemented.");
   }
   printStatement(): void {
-    throw new Error("Method not implemented.");
+    this.console.print('Date       || Amount || Balance')
   }
 }
 
