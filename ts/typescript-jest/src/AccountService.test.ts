@@ -1,38 +1,60 @@
-import {mock} from "jest-mock-extended";
+import { mock } from "jest-mock-extended";
 
 interface IConsole {
-  print(line: string): void
+  print(line: string): void;
 }
 
-const consoleService: IConsole = mock<IConsole>()
+const consoleService: IConsole = mock<IConsole>();
 
 describe("AccountService", () => {
   it("creates correctly", () => {
     const accountService = new AccountService(consoleService);
+
     expect(accountService).toBeDefined();
   });
 
   it("account service prints headers when have no statements", () => {
-    
     const accountService: IAccountService = new AccountService(consoleService);
 
     accountService.printStatement();
 
-    expect(consoleService.print).toHaveBeenCalledWith('Date       || Amount || Balance')
+    expect(consoleService.print).toHaveBeenCalledWith(
+      "Date       || Amount || Balance"
+    );
+  });
+
+  it("account service can handle a deposit", () => {
+    const accountService: IAccountService = new AccountService(consoleService);
+    accountService.deposit(1000);
+
+    accountService.printStatement();
+
+    expect(consoleService.print).toHaveBeenCalledWith(
+      "Date       || Amount || Balance\n10/01/2012 || 1000   || 1000"
+    );
   });
 });
 
+interface IAccountLine {
+  date: Date;
+  amount: number;
+  balance: number;
+}
+
 class AccountService implements IAccountService {
+  private headers = "Date       || Amount || Balance";
+  private accountLines: IAccountLine[] = [];
+
   constructor(private console: IConsole) {}
 
   deposit(amount: number): void {
-    throw new Error("Method not implemented.");
+    this.accountLines.push({ date: new Date(), amount, balance: amount });
   }
   withdraw(amount: number): void {
     throw new Error("Method not implemented.");
   }
   printStatement(): void {
-    this.console.print('Date       || Amount || Balance')
+    this.console.print(this.headers);
   }
 }
 
