@@ -16,7 +16,7 @@ You can customize the regexp and jest configuration by editing the `package.json
 # Get Yarn
 npm install -g yarn
 
-# Install dependencies
+# Install yarn dependencies
 yarn install
 ```
 
